@@ -83,6 +83,10 @@ if (count($list)>0) {
 			}
 		}
 		if (count($row)>0) {
+			echo "\n";
+			echo "Result:\n";
+			echo "-----------\n";
+			echo "\n";
 			foreach($row as $k) {
 				$card = array();
 				$n = count($k);
@@ -129,6 +133,10 @@ if (count($list)>0) {
 		$i++;
 	}
 	if (count($row)>0) {
+		echo "\n";
+		echo "Result:\n";
+		echo "-----------\n";
+		echo "\n";
 		foreach($row as $k) {
 			asort($k);
 			$col = 0;
@@ -143,6 +151,7 @@ if (count($list)>0) {
 		}
 	}
 }
+echo "\n";
 exit(0);
 
 ?>
