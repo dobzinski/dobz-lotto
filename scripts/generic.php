@@ -31,6 +31,89 @@ Examples:
 
 ***/
 
+function prepare($array) {
+	global $table, $max, $map, $data, $row, $repeat;
+	$card = array();
+	if (count($array)>0) {
+		$n = 0;
+		shuffle($array);
+		foreach($array as $k) {
+			if (count($array)<$max) {
+				$card[] = $k;
+			} else {
+				break;
+			}
+			$n++;
+		}
+		if ($n<$max) {
+			shuffle($table);
+			foreach($table as $t) {
+				if (!in_array($t, $card)) {
+					if ($n<$max) {
+						array_push($card, $t);
+					}
+					$n++;
+				}
+			}
+		}
+	} else {
+		$n = 0;
+		shuffle($table);
+		foreach($table as $t) {
+			if ($n<$max) {
+				$card[] = $t;
+			} else {
+				break;
+			}
+			$n++;
+		}
+	}
+	$i = '';
+	$index = $card;
+	asort($index);
+	foreach($index as $s) {
+		$i .= $s;
+	}
+	if (!in_array($i, $map)) {
+		$map[] = $i;
+		$repeat = 0;
+		foreach($card as $k) {
+			$data[$row][] = $k;
+		}
+		$row++;
+	} else {
+		$repeat++;
+		if ($repeat>999) {
+			echo "Sorry, the input number list are too low!\n";
+			exit(3);
+		}
+		prepare($array);
+	}
+	return;
+}
+function result($array) {
+	global $format;
+	if (count($array)>0) {
+		echo "\n";
+		echo "Result:\n";
+		echo "-----------\n";
+		echo "\n";
+		foreach($array as $k) {
+			asort($k);
+			$col = 0;
+			foreach($k as $v) {
+				echo str_pad($v, $format, '0', STR_PAD_LEFT);
+				if (count($k)>($col+1)) {
+					echo " - ";
+				}
+				$col++;
+			}
+			echo "\n";
+		}
+	}
+	return;
+}
+
 if (!isset($argv[3])) {
 	echo "Please, check parameters!\n";
 	exit(1);
@@ -46,110 +129,48 @@ if (isset($argv[4])) {
 }
 $format = (!isset($argv[5]) ? 2 : $argv[5]);
 $numbers = array();
-$select = array();
+$card = array();
+$map = array();
+$data = array();
 $row = array();
 if (strpos($limit, '-')) {
 	$lenght = explode('-', $limit);
 	$first = $lenght[0];
 	$last = $lenght[1];
 	$table = range($first, $last);
+	if ($first>=$last) {
+		echo "Please, check the range ($limit)!\n";
+		exit(2);
+	}
 }
 if (count($list)>0) {
 	foreach($list as $k) {
 		if (!empty($k)) {
-			$numbers[] = $k;
+			$numbers[] = (int)$k;
 		}
 	}
 	if (count($numbers)>0) {
-		for($i=$first; $i<=$last; $i++) {
-			if (in_array($i, $numbers)) {
-				$select[] = $i;
+		for($i=0; $i<count($numbers); $i++) {
+			if (!in_array($numbers[$i], $card)) {
+				$card[] = $numbers[$i];
 			}
 		}
-		if (count($select)>0) {
-			$i = 0;
-			while($i<$total) {
-				shuffle($select);
-				$n = 0;
-				foreach($select as $k) {
-					if ($n<$max) {
-						$row[$i][] = $k;
-					} else {
-						break;
-					}
-					$n++;
-				}
-				$i++;
+		if (count($card)>0) {
+			$row = 0;
+			$repeat = 0;
+			while($row<$total) {
+				prepare($card);
 			}
 		}
-		if (count($row)>0) {
-			echo "\n";
-			echo "Result:\n";
-			echo "-----------\n";
-			echo "\n";
-			foreach($row as $k) {
-				$card = array();
-				$n = count($k);
-				if ($n<$max) {
-					$card = $k;
-					shuffle($table);
-					foreach($table as $t) {
-						if (!in_array($t, $k)) {
-							if ($n<$max) {
-								array_push($card, $t);
-							}
-							$n++;
-						}
-					}
-				} else {
-					$card = $k;
-				}
-				asort($card);
-				$col = 0;
-				foreach($card as $v) {
-					echo str_pad($v, $format, '0', STR_PAD_LEFT);
-					if (count($card)>($col+1)) {
-						echo " - ";
-					}
-					$col++;
-				}
-				echo "\n";
-			}
-		}
+		result($data);
 	}
 } else {
-	$i = 0;
-	while($i<$total) {
-		shuffle($table);
-		$n = 0;
-		foreach($table as $t) {
-			if ($n<$max) {
-				$row[$i][] = $t;
-			} else {
-				break;
-			}
-			$n++;
-		}
-		$i++;
+	$row = 0;
+	$repeat = 0;
+	while($row<$total) {
+		prepare($card);
 	}
-	if (count($row)>0) {
-		echo "\n";
-		echo "Result:\n";
-		echo "-----------\n";
-		echo "\n";
-		foreach($row as $k) {
-			asort($k);
-			$col = 0;
-			foreach($k as $v) {
-				echo str_pad($v, $format, '0', STR_PAD_LEFT);
-				if (count($k)>($col+1)) {
-					echo " - ";
-				}
-				$col++;
-			}
-			echo "\n";
-		}
-	}
+	result($data);
 }
 echo "\n";
 exit(0);
