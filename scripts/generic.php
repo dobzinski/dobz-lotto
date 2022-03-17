@@ -132,7 +132,6 @@ $numbers = array();
 $card = array();
 $map = array();
 $data = array();
-$row = array();
 if (strpos($limit, '-')) {
 	$lenght = explode('-', $limit);
 	$first = $lenght[0];
@@ -155,23 +154,15 @@ if (count($list)>0) {
 				$card[] = $numbers[$i];
 			}
 		}
-		if (count($card)>0) {
-			$row = 0;
-			$repeat = 0;
-			while($row<$total) {
-				prepare($card);
-			}
-		}
-		result($data);
 	}
-} else {
-	$row = 0;
-	$repeat = 0;
-	while($row<$total) {
-		prepare($card);
-	}
-	result($data);
 }
+$row = 0;
+$repeat = 0;
+while($row<$total) {
+	prepare($card);
+}
+result($data);
+
 echo "\n";
 exit(0);
 
