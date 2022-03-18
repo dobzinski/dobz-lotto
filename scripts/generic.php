@@ -34,16 +34,27 @@ Examples:
 function prepare($array) {
 	global $table, $max, $map, $data, $row, $repeat;
 	$card = array();
-	if (count($array)>0) {
+	if (count($array)>=$max) {
+		$n = 0;
+		shuffle($array);
+		foreach($array as $k) {
+			if ($n<$max) {
+				$card[] = $k;
+				$n++;
+			} else {
+				break;
+			}
+		}
+	} else if (count($array)>0) {
 		$n = 0;
 		shuffle($array);
 		foreach($array as $k) {
 			if (count($array)<$max) {
 				$card[] = $k;
+				$n++;
 			} else {
 				break;
 			}
-			$n++;
 		}
 		if ($n<$max) {
 			shuffle($table);
@@ -62,10 +73,10 @@ function prepare($array) {
 		foreach($table as $t) {
 			if ($n<$max) {
 				$card[] = $t;
+				$n++;
 			} else {
 				break;
 			}
-			$n++;
 		}
 	}
 	$i = '';
