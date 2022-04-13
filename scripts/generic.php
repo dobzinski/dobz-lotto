@@ -156,7 +156,7 @@ if (strpos($limit, '-')) {
 if (count($list)>0) {
 	foreach($list as $k) {
 		if (!empty($k)) {
-			if ($k>$first && $k<$last) {
+			if ($k>=$first && $k<=$last) {
 				$numbers[] = (int)$k;
 			}
 		}
